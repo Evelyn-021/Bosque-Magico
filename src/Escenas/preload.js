@@ -21,13 +21,13 @@ export default class Preload extends Phaser.Scene {
 
 
     //ESCENARIO
-    this.load.image("ground", "./public/assets/img/escenario/suelo.png");
+    
     this.load.image("fondo", "./public/assets/img/escenario/fondo.png");
     this.load.image("arbolcapa1", "./public/assets/img/escenario/arbolcapa1.png");
     this.load.image("nube", "./public/assets/img/escenario/nube.png");
     this.load.image("arbolesfondo", "./public/assets/img/escenario/arbolesfondo.png");
     this.load.image("suelo", "./public/assets/img/escenario/suelo.png");
-
+    this.load.image("plataforma", "./public/assets/img/escenario/Plataforma.png");
 
 
  // 🎵 música
@@ -48,9 +48,9 @@ export default class Preload extends Phaser.Scene {
     frameHeight: 83,
   });
 
-this.load.spritesheet("salto", "assets/salto.png", {
-  frameWidth: 121, // ← ancho de cada frame
-  frameHeight: 89  // ← alto de cada frame
+this.load.spritesheet("saltop", "./public/assets/img/Personaje/saltop.png", {
+  frameWidth: 119, // ← ancho de cada frame
+  frameHeight: 81  // ← alto de cada frame
 });
 
 

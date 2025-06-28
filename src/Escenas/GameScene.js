@@ -5,9 +5,11 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
    
-    // Fondo centrado en pantalla
-    this.add.image(400, 300, "fondo").setDisplaySize(800, 600);
-    
+    // Fondo centrado en pantalla (parallax )
+    this.fondo = this.add.tileSprite(0, 0, this.physics.world.bounds.width, 600, "fondo")
+  .setOrigin(0, 0)
+  .setScrollFactor(0); // se mantiene fijo o lo podés cambiar a 0.5 para parallax
+
 
     // Nubes (pueden ir un poco más arriba)
     this.add.image(400, 150, "nube").setScale(1.5);
@@ -15,8 +17,15 @@ export default class GameScene extends Phaser.Scene {
 
     
     // Árboles lejanos del fondo
-    this.add.image(400, 400, "arbolesfondo");
-    
+    const cantidadArbolesFondo = 12;
+      const anchoNivel1 = 5000;
+      const espacioEntreFondo = anchoNivel1 / cantidadArbolesFondo;
+
+      for (let i = 0; i < cantidadArbolesFondo; i++) {
+        const x = i * espacioEntreFondo + Phaser.Math.Between(-100, 100);
+        const y = 400; // O podés variar también un poco la altura si querés
+        this.add.image(x, y, "arbolesfondo").setScale(1.1).setScrollFactor(0.5);
+      }
 
 
     // Generar 10 nubes en posiciones aleatorias
@@ -28,20 +37,89 @@ export default class GameScene extends Phaser.Scene {
     }
 
     // Generar 8 árboles de fondo
-    for (let i = 0; i < 8; i++) {
-      const x = Phaser.Math.Between(0, 2000);
-      const y = 400; // Altura fija si los árboles están en el suelo
+    const cantidadArboles = 30;
+    const anchoNivel = 5000; // que coincida con el `setBounds`
+    const espacioEntreArboles = anchoNivel / cantidadArboles;
+
+    for (let i = 0; i < cantidadArboles; i++) {
+      const x = i * espacioEntreArboles + Phaser.Math.Between(-50, 50); // le das un poco de variación
+      const y = 400;
 
       this.add.image(x, y, "arbolcapa1").setScale(1.2);
     }
 
 
-
    
 
   // suelo
-  const suelo = this.physics.add.staticImage(400, 590, "suelo");
-  suelo.setScale(1).refreshBody();
+ // Suelo repetido como fondo (tileSprite)
+this.suelo = this.add.tileSprite(0, 600, 5000, 32, "suelo").setOrigin(0, 1);
+
+// Crear colisión con suelo invisible
+this.sueloCollider = this.physics.add.staticImage(0, 600, null)
+  .setOrigin(0, 1)
+  .setDisplaySize(5000, 32) // Misma medida que el tileSprite
+  .refreshBody();
+
+this.sueloCollider.setVisible(false);
+
+
+  
+
+//PLATAFORMAS
+// GRUPO DE PLATAFORMAS
+this.plataformas = this.physics.add.staticGroup();
+
+
+
+// Plataformas normales
+this.plataformas.create(300, 400, "plataforma").setScale(0.6).refreshBody();
+this.plataformas.create(600, 500, "plataforma").setScale(0.6).refreshBody();
+
+
+// PLATAFORMA MÓVIL (ejemplo 1)
+this.plataformaMovil1 = this.physics.add.image(1000, 400, "plataforma")
+  .setImmovable(true)
+  .setVelocity(0, 0)
+  .setScale(0.7)
+  .setDepth(1);
+this.plataformaMovil1.body.allowGravity = false;
+
+// Tweens para moverla verticalmente
+this.tweens.add({
+  targets: this.plataformaMovil1,
+  y: 300, // hasta donde sube
+  duration: 2000,
+  yoyo: true,
+  repeat: -1,
+  ease: 'Sine.easeInOut'
+});
+
+// Otra plataforma móvil (ejemplo 2)
+this.plataformaMovil2 = this.physics.add.image(2000, 500, "plataforma")
+  .setImmovable(true)
+  .setVelocity(0, 0)
+  .setScale(0.7)
+  .setDepth(1);
+this.plataformaMovil2.body.allowGravity = false;
+
+this.tweens.add({
+  targets: this.plataformaMovil2,
+  y: 400,
+  duration: 2500,
+  yoyo: true,
+  repeat: -1,
+  ease: 'Sine.easeInOut'
+});
+
+
+
+
+
+
+
+
+
 
 
 
@@ -70,14 +148,22 @@ export default class GameScene extends Phaser.Scene {
     
     this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true)
-    this.physics.add.collider(this.player, suelo);
+  
     this.player.body.setSize(30, 55); // CORRECCION CAJA DE COLISION
     this.player.body.setOffset(10, 30);
      
+// Agregar colisión entre jugador y suelo invisible
+this.physics.add.collider(this.player, this.sueloCollider);
+this.physics.add.collider(this.player, this.plataformas);
+this.physics.add.collider(this.player, this.plataformaMovil1);
+this.physics.add.collider(this.player, this.plataformaMovil2);
+
+
+
       // Animaciones derecha
       this.anims.create({
         key: "caminarDer",
-        frames: this.anims.generateFrameNumbers("der", { start: 1, end: 4 }),
+        frames: this.anims.generateFrameNumbers("der", { start: 1, end: 3 }),
         frameRate: 10,
         repeat: -1,
       });
@@ -92,7 +178,7 @@ export default class GameScene extends Phaser.Scene {
       // Animaciones izquierda
       this.anims.create({
         key: "caminarIzq",
-        frames: this.anims.generateFrameNumbers("izq", { start: 1, end: 4 }),
+        frames: this.anims.generateFrameNumbers("izq", { start: 1, end: 3 }),
         frameRate: 10,
         repeat: -1,
       });
@@ -157,6 +243,18 @@ update() {
 
 
 
+//no se revolvio como queria (se deja el cambio hasta arreglarlo)
+// SALTO: solo cambia el sprite y sube
+const enSuelo = this.player.body.blocked.down;
+if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && enSuelo) {
+  this.player.setVelocityY(-250);
+  this.player.setTexture("saltop");
+  this.player.setFrame(1); // Solo ese frame
+}
+
+
+
+
 
 
 
@@ -168,10 +266,8 @@ if (this.player.y > this.mapHeight) {
 }
 
 
-
-
-
-
+//FONDO 
+this.fondo.tilePositionX = this.cameras.main.scrollX * 0.5;
 
 
 
