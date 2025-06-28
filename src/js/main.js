@@ -4,6 +4,7 @@ import GameScene from "../Escenas/GameScene.js";
 import ConfigScene from "../Escenas/ConfigScene.js";
 import HelpScene from "../Escenas/HelpScene.js";
 import GameOverScene from "../Escenas/GameOverScene.js";
+import PerderVida from "../Escenas/PerderVida.js";
 const config = {
   type: Phaser.AUTO,
   width: 800,
@@ -27,7 +28,7 @@ const config = {
     antialiasGL: true,     // ← suaviza en WebGL
     roundPixels: false     // ← evita redondeos bruscos que deforman sprites
   },
-  scene: [Preload, MenuScene, GameScene, ConfigScene, HelpScene, GameOverScene] // Menú primero 
+  scene: [Preload, MenuScene, GameScene, ConfigScene, PerderVida, HelpScene, GameOverScene] // Menú primero 
 };
 
 window.game = new Phaser.Game(config);

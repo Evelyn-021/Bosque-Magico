@@ -83,7 +83,8 @@ this.suelo1Collider = this.physics.add.staticImage(0, 600, null)
 this.suelo1Collider.setVisible(false);
 
 
-  
+ 
+
 
 //PLATAFORMAS
 // GRUPO DE PLATAFORMAS
@@ -161,7 +162,17 @@ this.ramas.create(2000, 350, "ramaplataforma").setScale(0.6).refreshBody();
 this.ramas.create(2800, 380, "ramaplataforma").setScale(0.6).refreshBody();
 this.ramas.create(3600, 410, "ramaplataforma").setScale(0.6).refreshBody();
 
+// Grupo de pinchos 
+this.picos = this.physics.add.staticGroup();
+// Picos de suelo
+this.picos.create(500, 580, "picosuelo").setScale(0.6).refreshBody();
+this.picos.create(1000, 580, "picosuelo").setScale(0.6).refreshBody();
+this.picos.create(1500, 580, "picosuelo").setScale(0.6).refreshBody();
 
+// Picos en ramas
+this.picos.create(1270, 70, "picoramas").setScale(0.6).refreshBody();
+this.picos.create(2000, 320, "picoramas").setScale(0.6).refreshBody();
+this.picos.create(2800, 350, "picoramas").setScale(0.6).refreshBody();
 
 
 
@@ -178,6 +189,8 @@ this.ramas.create(3600, 410, "ramaplataforma").setScale(0.6).refreshBody();
           this.scene.pause();                // Pausa GameScene
         });
 
+//sonido daño
+this.sonidoDaño = this.sound.add("sonidoDaño");
 
 
 
@@ -195,12 +208,36 @@ this.ramas.create(3600, 410, "ramaplataforma").setScale(0.6).refreshBody();
     this.player.body.setOffset(10, 30);
      
       // Agregar colisión entre jugador y suelo invisible
+
       //Colision con el suelo
       this.physics.add.collider(this.player, this.suelo1Collider);
+
       //colision con las bases
       this.physics.add.collider(this.player, this.bases);
+
       //colision con las ramas
         this.physics.add.collider(this.player, this.ramas);
+
+        //MORIR POR PICOS, COLISION Y SONIDO DE DAÑO
+         this.physics.add.collider(this.player, this.picos, () => {
+          this.sonidoDaño.play(); // Reproduce el sonido
+          this.scene.pause();
+          this.scene.launch("PerderVida", { origen: "GameScene" });
+        });
+        
+                      //VIDA
+          this.registry.set("vida", 4); // 4 corazones
+          this.vidas = [];
+
+          for (let i = 0; i < 4; i++) {
+            const corazon = this.add.image(30 + i * 40, 30, "vida")
+              .setScrollFactor(0)
+              .setScale(0.7);
+            this.vidas.push(corazon);
+          }
+                  
+
+
 
       //COLISION CON PLATAFORMAS
       this.physics.add.collider(this.player, this.plataformas);
@@ -257,6 +294,8 @@ this.ramas.create(3600, 410, "ramaplataforma").setScale(0.6).refreshBody();
 
 
 
+
+  
 }
 
 update() {
@@ -307,16 +346,22 @@ if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && enSuelo) {
 
 
 
-// Si el personaje cae al vacío
-if (this.player.y > this.mapHeight) {
-  this.registry.set("vida", this.registry.get("vida") - 1); // 💔 restar 1 corazón
-  this.scene.pause();  // pausa el juego
-  this.scene.launch("GameOverScene"); // muestra ventana de Game Over
-}
 
-
-//FONDO 
+//FONDO PARALLAX
 this.fondo.tilePositionX = this.cameras.main.scrollX * 0.5;
+
+
+
+//VIDA 
+const vidaActual = this.registry.get("vida");
+
+this.vidas.forEach((corazon, index) => {
+  corazon.setVisible(index < vidaActual);
+});
+
+
+
+
 
 
 
