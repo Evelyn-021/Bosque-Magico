@@ -36,7 +36,26 @@ export default class GameScene extends Phaser.Scene {
       this.add.image(x, y, "nube").setScale(1.2);
     }
 
-    // Generar 8 árboles de fondo
+
+
+
+
+ // Generar 30 árboles de fondo capa 2
+const cantidadArboles2 = 10;
+    const anchoNivel2 = 5000; // que coincida con el `setBounds`
+    const espacioEntreArboles2 = anchoNivel2 / cantidadArboles2;
+
+    for (let i = 0; i < cantidadArboles2; i++) {
+      const x = i * espacioEntreArboles2 + Phaser.Math.Between(-50, 50); // le das un poco de variación
+      const y = 400;
+
+      this.add.image(x, y, "arbolcapa2").setScale(0.8).setScrollFactor(0.6); // Ajusta el scale y scrollFactor para el efecto de fondo
+    }
+
+
+
+
+    // Generar 30 árboles de fondo capa 1
     const cantidadArboles = 30;
     const anchoNivel = 5000; // que coincida con el `setBounds`
     const espacioEntreArboles = anchoNivel / cantidadArboles;
@@ -45,7 +64,7 @@ export default class GameScene extends Phaser.Scene {
       const x = i * espacioEntreArboles + Phaser.Math.Between(-50, 50); // le das un poco de variación
       const y = 400;
 
-      this.add.image(x, y, "arbolcapa1").setScale(1.2);
+      this.add.image(x, y, "arbolcapa1").setScale(1.2).setScrollFactor(0.7); // Ajusta el scale y scrollFactor para el efecto de fondo
     }
 
 

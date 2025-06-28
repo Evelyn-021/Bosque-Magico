@@ -24,6 +24,7 @@ export default class Preload extends Phaser.Scene {
     
     this.load.image("fondo", "./public/assets/img/escenario/fondo.png");
     this.load.image("arbolcapa1", "./public/assets/img/escenario/arbolcapa1.png");
+    this.load.image("arbolcapa2", "./public/assets/img/escenario/arbolcapa2.png");
     this.load.image("nube", "./public/assets/img/escenario/nube.png");
     this.load.image("arbolesfondo", "./public/assets/img/escenario/arbolesfondo.png");
     this.load.image("suelo", "./public/assets/img/escenario/suelo.png");
