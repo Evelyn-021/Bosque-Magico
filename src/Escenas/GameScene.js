@@ -72,15 +72,15 @@ const cantidadArboles2 = 10;
 
   // suelo
  // Suelo repetido como fondo (tileSprite)
-this.suelo = this.add.tileSprite(0, 600, 5000, 32, "suelo").setOrigin(0, 1);
+this.suelo1 = this.add.tileSprite(0, 600, 5000, 32, "suelo1").setOrigin(0, 1);
 
 // Crear colisión con suelo invisible
-this.sueloCollider = this.physics.add.staticImage(0, 600, null)
+this.suelo1Collider = this.physics.add.staticImage(0, 600, null)
   .setOrigin(0, 1)
   .setDisplaySize(5000, 32) // Misma medida que el tileSprite
   .refreshBody();
 
-this.sueloCollider.setVisible(false);
+this.suelo1Collider.setVisible(false);
 
 
   
@@ -92,39 +92,38 @@ this.plataformas = this.physics.add.staticGroup();
 
 
 // Plataformas normales
-this.plataformas.create(300, 400, "plataforma").setScale(0.6).refreshBody();
-this.plataformas.create(600, 500, "plataforma").setScale(0.6).refreshBody();
+this.plataformas.create(700, 170, "plataforma").setScale(0.6).refreshBody();
+this.plataformas.create(750, 400, "plataforma").setScale(0.6).refreshBody();
 
 
-// PLATAFORMA MÓVIL (ejemplo 1)
+// PLATAFORMA MÓVIL (1)
 this.plataformaMovil1 = this.physics.add.image(1000, 400, "plataforma")
   .setImmovable(true)
   .setVelocity(0, 0)
-  .setScale(0.7)
+  .setScale(0.6)
   .setDepth(1);
 this.plataformaMovil1.body.allowGravity = false;
-
 // Tweens para moverla verticalmente
 this.tweens.add({
   targets: this.plataformaMovil1,
-  y: 300, // hasta donde sube
-  duration: 2000,
+  y: 100, // hasta donde sube
+  duration: 2500,
   yoyo: true,
   repeat: -1,
   ease: 'Sine.easeInOut'
 });
 
 // Otra plataforma móvil (ejemplo 2)
-this.plataformaMovil2 = this.physics.add.image(2000, 500, "plataforma")
+this.plataformaMovil2 = this.physics.add.image(1600, 400, "plataforma")
   .setImmovable(true)
   .setVelocity(0, 0)
-  .setScale(0.7)
+  .setScale(0.6)
   .setDepth(1);
 this.plataformaMovil2.body.allowGravity = false;
 
 this.tweens.add({
   targets: this.plataformaMovil2,
-  y: 400,
+  y: 100,
   duration: 2500,
   yoyo: true,
   repeat: -1,
@@ -132,28 +131,52 @@ this.tweens.add({
 });
 
 
+// BASES DONDE VA A SALTAR EL PERSONAJE
+this.bases = this.physics.add.staticGroup();
+
+// bases (coordenadas X, Y ajustables)
+this.bases.create(290, 520, "base").setScale(1).refreshBody();
+this.bases.create(1200, 520, "base").setScale(1).refreshBody();
+this.bases.create(2000, 520, "base").setScale(1).refreshBody();
+this.bases.create(2800, 520, "base").setScale(1).refreshBody();
+this.bases.create(3600, 520, "base").setScale(1).refreshBody();
+
+//ARBOLES PLATAFORMEROS QUE VAN ENCIMA DE LAS BASES
+this.add.image(400, 204, "arbol1").setScale(0.6);
+this.add.image(1200, 204, "arbol2").setScale(0.6);
+this.add.image(2000, 204, "arbol1").setScale(0.6);
+this.add.image (2800, 204, "arbol2").setScale(0.6);
+this.add.image(3600, 204, "arbol1").setScale(0.6);
+
+
+// RAMAS DE LOS ÁRBOLES (como plataformas chicas)
+this.ramas = this.physics.add.staticGroup();
+
+// Agregar ramas en distintas posiciones
+this.ramas.create(290, 150, "ramaplataforma").setScale(0.6).refreshBody();
+this.ramas.create (500, 380, "rama2").setScale(0.6).refreshBody();
+this.ramas.create(1250, 400, "rama2").setScale(0.6).refreshBody();
+this.ramas.create(1270, 100, "rama2").setScale(0.6).refreshBody();
+this.ramas.create(2000, 350, "ramaplataforma").setScale(0.6).refreshBody();
+this.ramas.create(2800, 380, "ramaplataforma").setScale(0.6).refreshBody();
+this.ramas.create(3600, 410, "ramaplataforma").setScale(0.6).refreshBody();
 
 
 
 
 
+      // Entrada teclado
+      this.cursors = this.input.keyboard.createCursorKeys();
+      this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+    //CONFIGURACIÓN
+    
+        this.configBtn = this.add.image(750, 50, "config").setInteractive().setScale(0.5).setScrollFactor(0);
 
-
-
-
-  // Entrada teclado
-  this.cursors = this.input.keyboard.createCursorKeys();
-  this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
- //CONFIGURACIÓN
- 
-    this.configBtn = this.add.image(750, 50, "config").setInteractive().setScale(0.5).setScrollFactor(0);
-
-    this.configBtn.on("pointerdown", () => {
-      this.scene.launch("ConfigScene");  // Abre Config
-      this.scene.pause();                // Pausa GameScene
-    });
+        this.configBtn.on("pointerdown", () => {
+          this.scene.launch("ConfigScene");  // Abre Config
+          this.scene.pause();                // Pausa GameScene
+        });
 
 
 
@@ -171,11 +194,18 @@ this.tweens.add({
     this.player.body.setSize(30, 55); // CORRECCION CAJA DE COLISION
     this.player.body.setOffset(10, 30);
      
-// Agregar colisión entre jugador y suelo invisible
-this.physics.add.collider(this.player, this.sueloCollider);
-this.physics.add.collider(this.player, this.plataformas);
-this.physics.add.collider(this.player, this.plataformaMovil1);
-this.physics.add.collider(this.player, this.plataformaMovil2);
+      // Agregar colisión entre jugador y suelo invisible
+      //Colision con el suelo
+      this.physics.add.collider(this.player, this.suelo1Collider);
+      //colision con las bases
+      this.physics.add.collider(this.player, this.bases);
+      //colision con las ramas
+        this.physics.add.collider(this.player, this.ramas);
+
+      //COLISION CON PLATAFORMAS
+      this.physics.add.collider(this.player, this.plataformas);
+      this.physics.add.collider(this.player, this.plataformaMovil1);
+      this.physics.add.collider(this.player, this.plataformaMovil2);
 
 
 

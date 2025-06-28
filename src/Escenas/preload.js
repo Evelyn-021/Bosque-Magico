@@ -27,10 +27,16 @@ export default class Preload extends Phaser.Scene {
     this.load.image("arbolcapa2", "./public/assets/img/escenario/arbolcapa2.png");
     this.load.image("nube", "./public/assets/img/escenario/nube.png");
     this.load.image("arbolesfondo", "./public/assets/img/escenario/arbolesfondo.png");
-    this.load.image("suelo", "./public/assets/img/escenario/suelo.png");
+    this.load.image("suelo1", "./public/assets/img/escenario/suelo1.png");
     this.load.image("plataforma", "./public/assets/img/escenario/Plataforma.png");
-
-
+    this.load.image("arbol1", "./public/assets/img/escenario/arbol1.png");
+    this.load.image("arbol2", "./public/assets/img/escenario/arbol2.png");
+    this.load.image ("ramaplataforma", "./public/assets/img/escenario/ramaplataforma.png");
+    this.load.image ("base", "./public/assets/img/escenario/base.png");
+    this.load.image("rama2", "./public/assets/img/escenario/rama2.png");
+    this.load.image ("picosuelo", "./public/assets/img/escenario/picosuelo.png");
+    this.load.image("picosramas", "./public/assets/img/escenario/picosramas.png");
+    
  // 🎵 música
     this.load.audio("Musica", "./public/assets/sonidos/Musica.mp3");
     //sprite del sonido
