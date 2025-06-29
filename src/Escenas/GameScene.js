@@ -1,3 +1,4 @@
+import Recolectables from "../Escenas/Recolectables.js";
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
@@ -165,14 +166,48 @@ this.ramas.create(3600, 410, "ramaplataforma").setScale(0.6).refreshBody();
 // Grupo de pinchos 
 this.picos = this.physics.add.staticGroup();
 // Picos de suelo
-this.picos.create(500, 580, "picosuelo").setScale(0.6).refreshBody();
-this.picos.create(1000, 580, "picosuelo").setScale(0.6).refreshBody();
-this.picos.create(1500, 580, "picosuelo").setScale(0.6).refreshBody();
+this.picos.create(500, 480, "picosuelo").setScale(0.6).refreshBody();
+this.picos.create(1000, 480, "picosuelo").setScale(0.6).refreshBody();
+this.picos.create(1500, 480, "picosuelo").setScale(0.6).refreshBody();
 
 // Picos en ramas
 this.picos.create(1270, 70, "picoramas").setScale(0.6).refreshBody();
 this.picos.create(2000, 320, "picoramas").setScale(0.6).refreshBody();
 this.picos.create(2800, 350, "picoramas").setScale(0.6).refreshBody();
+
+
+
+//OBJETOS RECOLECTABLES
+// POCIONES
+
+this.input.keyboard.on("keydown-P", () => {
+  const usaste = this.recolectables.usarPocion();
+  if (usaste) {
+    this.sound.play("usarpocion");
+
+    // Regenerar vida si tenés menos de 4
+    let vida = this.registry.get("vida");
+    if (vida < 4) {
+      vida++;
+      this.registry.set("vida", vida);
+      this.actualizarCorazones();
+    }
+  }
+});
+this.input.keyboard.on("keydown-P", () => {
+  const usaste = this.recolectables.usarPocion();
+  if (usaste) {
+    this.sound.play("usarpocion");
+
+    // Regenerar vida si tenés menos de 4
+    let vida = this.registry.get("vida");
+    if (vida < 4) {
+      vida++;
+      this.registry.set("vida", vida);
+      this.actualizarCorazones();
+    }
+  }
+});
 
 
 
@@ -189,8 +224,10 @@ this.picos.create(2800, 350, "picoramas").setScale(0.6).refreshBody();
           this.scene.pause();                // Pausa GameScene
         });
 
-//sonido daño
-this.sonidoDaño = this.sound.add("sonidoDaño");
+
+        //SONIDOS
+          //DAÑO AL PERSONAJE
+          this.sonidoDaño = this.sound.add("sonidoDaño");
 
 
 
@@ -218,24 +255,40 @@ this.sonidoDaño = this.sound.add("sonidoDaño");
       //colision con las ramas
         this.physics.add.collider(this.player, this.ramas);
 
-        //MORIR POR PICOS, COLISION Y SONIDO DE DAÑO
-         this.physics.add.collider(this.player, this.picos, () => {
-          this.sonidoDaño.play(); // Reproduce el sonido
-          this.scene.pause();
-          this.scene.launch("PerderVida", { origen: "GameScene" });
+        //MORIR POR PICOS, CON INMUNIDAD Y SONIDO
+        this.physics.add.collider(this.player, this.picos, () => {
+          if (!this.inmune) {
+            this.sonidoDaño.play(); // Reproduce el sonido
+            this.scene.pause();
+            this.scene.launch("PerderVida", { origen: "GameScene" });
+          }
         });
+
+
+        // Recolectables
+        this.sonidoJuntar = this.sound.add("juntar");
+        this.recolectables = new Recolectables(this);
+        this.recolectables.cargarObjetos();
+        this.recolectables.crearColisiones(this.player, this.sonidoJuntar);
+
+
+
+
+
         
                       //VIDA
           this.registry.set("vida", 4); // 4 corazones
           this.vidas = [];
 
           for (let i = 0; i < 4; i++) {
-            const corazon = this.add.image(30 + i * 40, 30, "vida")
+            const corazon = this.add.image(30 + i * 50, 30, "vida")
               .setScrollFactor(0)
-              .setScale(0.7);
+              .setScale(0.9);
             this.vidas.push(corazon);
           }
-                  
+         
+          
+          
 
 
 
@@ -335,7 +388,7 @@ update() {
 // SALTO: solo cambia el sprite y sube
 const enSuelo = this.player.body.blocked.down;
 if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && enSuelo) {
-  this.player.setVelocityY(-250);
+  this.player.setVelocityY(-300);
   this.player.setTexture("saltop");
   this.player.setFrame(1); // Solo ese frame
 }
@@ -361,6 +414,12 @@ this.vidas.forEach((corazon, index) => {
 
 
 
+
+if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey('E'))) {
+  this.recolectables.usarLuci((estadoInmunidad) => {
+    this.inmune = estadoInmunidad;
+  });
+}
 
 
 
