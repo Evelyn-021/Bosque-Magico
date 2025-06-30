@@ -42,6 +42,7 @@ export default class Recolectables {
 
     // Luciérnagas
     const posicionesLuz = [
+      [100, 300], [150, 300], [200, 300], [250, 300],
       [800, 300], [810, 350], [830, 350], [850, 350],
       [1400, 500], [1500, 550], [1600, 600], [1700, 650],
       [1800, 700], [2000, 750], [2200, 800], [2500, 850],
@@ -57,7 +58,7 @@ export default class Recolectables {
     const posicionesMonedas = [
       [1000, 350], [1700, 250], [2200, 300], [3000, 450],
       [3500, 400], [4000, 500], [4500, 550], [5000, 600],
-      [5500, 650], [6000, 700]
+      [5500, 650], 
     ];
     posicionesMonedas.forEach(([x, y]) => {
       const moneda = this.monedas.create(x, y, "monedas").setScale(0.6);
@@ -123,34 +124,51 @@ export default class Recolectables {
     }
 
   crearColisiones(jugador, sonidoJuntar) {
+    
     this.scene.physics.add.overlap(jugador, this.pociones, (player, pocion) => {
-      if (this.pocionesActuales < this.pocionesMax) {
-        pocion.destroy();
-        sonidoJuntar.play();
-        this.pocionesActuales++;
-        this.actualizarUI();
-      }
+  if (this.pocionesActuales < this.pocionesMax) {
+    pocion.disableBody(true, true);
+    sonidoJuntar.play();
+    this.pocionesActuales++;
+    this.actualizarUI();
+
+    this.scene.time.delayedCall(10000, () => {
+      pocion.enableBody(false, pocion.x, pocion.y, true, true);
     });
+  }
+});
+
 
     this.scene.physics.add.overlap(jugador, this.luciernagas, (player, luz) => {
-      if (this.luciActuales < this.luciMax) {
-        luz.destroy();
-        sonidoJuntar.play();
-        this.luciActuales++;
-        this.actualizarUI();
-      }
+  if (this.luciActuales < this.luciMax) {
+    luz.disableBody(true, true);
+    sonidoJuntar.play();
+    this.luciActuales++;
+    this.actualizarUI();
+
+    this.scene.time.delayedCall(8000, () => {
+      luz.enableBody(false, luz.x, luz.y, true, true);
     });
+  }
+});
+
 
     this.scene.physics.add.overlap(jugador, this.monedas, (player, moneda) => {
-      moneda.destroy();
-      sonidoJuntar.play();
-      this.puntajeMonedas += 5;
-      if (this.puntajeMonedas > this.recordMonedas) {
-        this.recordMonedas = this.puntajeMonedas;
-        localStorage.setItem("recordMonedas", this.recordMonedas);
-      }
-      this.actualizarUI();
-    });
+  moneda.disableBody(true, true);
+  sonidoJuntar.play();
+  this.puntajeMonedas += 5;
+  if (this.puntajeMonedas > this.recordMonedas) {
+    this.recordMonedas = this.puntajeMonedas;
+    localStorage.setItem("recordMonedas", this.recordMonedas);
+  }
+  this.actualizarUI();
+
+  // Volver a aparecer después de 5 segundos
+  this.scene.time.delayedCall(5000, () => {
+    moneda.enableBody(false, moneda.x, moneda.y, true, true);
+  });
+});
+
   }
 
   actualizarUI() {
@@ -179,6 +197,7 @@ export default class Recolectables {
     if (this.luciActuales >= this.luciMax) {
       this.luciActuales = 0;
       this.actualizarUI();
+      this.scene.sound.play("potenciador");
 
       // Mostrar texto e iniciar temporizador
       this.timerTexto.setVisible(true);

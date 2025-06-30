@@ -27,7 +27,7 @@ export default class ConfigScene extends Phaser.Scene {
 
     // Opciones
     //PLACEHOLDER SONIDO
-    // 📌 SLIDER de volumen
+    //  SLIDER de volumen
     const sliderX = 420;
     const sliderY = 290;
     const sliderWidth = 170;

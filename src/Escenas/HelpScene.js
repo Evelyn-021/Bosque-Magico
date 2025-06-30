@@ -3,14 +3,50 @@ export default class HelpScene extends Phaser.Scene {
     super("HelpScene");
   }
 
+  preload() {
+    this.load.image("helpFondo", "./public/assets/img/interfaz/help.png"); // asegurate de que esté ahí
+  }
+
   create() {
-    this.add.rectangle(400, 300, 600, 400, 0x000000, 0.6); // fondo
-    this.add.text(400, 200, "Controles:\n← → para moverse\nESPACIO para saltar\n⚔ para atacar", {
-      fontSize: "24px",
-      color: "#fff",
-      align: "center",
-      fontFamily: "Arial",
-    }).setOrigin(0.5);
+    // Fondo con imagen
+    this.add.image(400, 300, "helpFondo").setScale(1.5);
+
+    // Texto de ayuda
+    this.add.text(400, 160,
+      "Controles:",
+      {
+        fontSize: "32px",
+        color: "#ffffff",
+        fontFamily: "Arial Black",
+        align: "center"
+      })
+      .setOrigin(0.5)
+      .setShadow(2, 2, "#000", 2, true, true);
+
+  
+this.add.text(400, 270,
+  "← → para moverse\n↑ para saltar\nP para usar poción\nE para activar inmunidad\n(si tenés 10 luciérnagas)", 
+  {
+    fontSize: "20px",
+    color: "#ffffff",
+    fontFamily: "Arial Black",
+    align: "center",
+    lineSpacing: 10
+  })
+  .setOrigin(0.5)
+  .setShadow(1, 1, "#000", 1, true, true);
+
+this.add.text(400, 400,
+  "Pulsa ESC para cerrar esta ventana\n y volver al juego",
+  {
+    fontSize: "20px",
+    //color rojo
+    color: "#ff0000",
+    fontFamily: "Arial Black",
+    align: "center"
+  })
+  .setOrigin(0.5)
+  .setShadow(1, 1, "#000", 1, true, true);
 
     // Cierra la ayuda con ESC
     this.input.keyboard.once("keydown-ESC", () => {

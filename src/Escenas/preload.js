@@ -51,25 +51,34 @@ export default class Preload extends Phaser.Scene {
     this.load.audio("sonidoDaño", "./public/assets/sonidos/sonidoDaño.mp3");
     this.load.audio("juntar", "./public/assets/sonidos/juntar.mp3");
     this.load.audio("usarpocion", "./public/assets/sonidos/usarpocion.mp3");
-    
+    this.load.audio("potenciador", "./public/assets/sonidos/potenciador.wav");
+
   
 
     //PERSONAJE
     // Mirddin
      this.load.spritesheet("der", "./public/assets/img/Personaje/der.png", {
-    frameWidth: 128,
-    frameHeight: 83,
+    frameWidth: 128.5,
+    frameHeight: 84,
   });
 
   this.load.spritesheet("izq", "./public/assets/img/Personaje/izq.png", {
-    frameWidth: 128,
-    frameHeight: 83,
+    frameWidth: 129.5,
+    frameHeight: 84,
   });
 
 this.load.spritesheet("saltop", "./public/assets/img/Personaje/saltop.png", {
   frameWidth: 119, // ← ancho de cada frame
   frameHeight: 81  // ← alto de cada frame
 });
+
+//ENEMIGOS
+this.load.spritesheet("calabaza", "./public/assets/img/enemigos/calabaza.png", {
+  frameWidth: 117.5, 
+  frameHeight: 85
+});
+
+
 
 
 

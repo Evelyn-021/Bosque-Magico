@@ -1,4 +1,5 @@
 import Recolectables from "../Escenas/Recolectables.js";
+
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
@@ -94,11 +95,12 @@ this.plataformas = this.physics.add.staticGroup();
 
 
 // Plataformas normales
-this.plataformas.create(700, 170, "plataforma").setScale(0.6).refreshBody();
-this.plataformas.create(750, 400, "plataforma").setScale(0.6).refreshBody();
+this.plataformas.create(550, 170, "plataforma").setScale(0.6).refreshBody();
+
 
 
 // PLATAFORMA MÓVIL (1)
+this.plataformasMoviles = //(trate de hacer un grupo pero no se la logica)
 this.plataformaMovil1 = this.physics.add.image(1000, 400, "plataforma")
   .setImmovable(true)
   .setVelocity(0, 0)
@@ -114,6 +116,7 @@ this.tweens.add({
   repeat: -1,
   ease: 'Sine.easeInOut'
 });
+
 
 // Otra plataforma móvil (ejemplo 2)
 this.plataformaMovil2 = this.physics.add.image(1600, 400, "plataforma")
@@ -131,6 +134,20 @@ this.tweens.add({
   repeat: -1,
   ease: 'Sine.easeInOut'
 });
+
+//plataforma movil 3
+this.plataformaMovil3=this.physics.add.image(750, 400, "plataforma").setScale(0.6).refreshBody().setImmovable(true)
+  .setVelocity(0, 0).setDepth(1);;
+this.plataformaMovil3.body.allowGravity = false;
+this.tweens.add({
+  targets: this.plataformaMovil3,
+  y: 100, // hasta donde sube
+  duration: 2500,
+  yoyo: true,
+  repeat: -1,
+  ease: 'Sine.easeInOut'
+});
+
 
 
 // BASES DONDE VA A SALTAR EL PERSONAJE
@@ -157,7 +174,7 @@ this.ramas = this.physics.add.staticGroup();
 // Agregar ramas en distintas posiciones
 this.ramas.create(290, 150, "ramaplataforma").setScale(0.6).refreshBody();
 this.ramas.create (500, 380, "rama2").setScale(0.6).refreshBody();
-this.ramas.create(1250, 400, "rama2").setScale(0.6).refreshBody();
+this.ramas.create(1250, 300, "rama2").setScale(0.6).refreshBody();
 this.ramas.create(1270, 100, "rama2").setScale(0.6).refreshBody();
 this.ramas.create(2000, 350, "ramaplataforma").setScale(0.6).refreshBody();
 this.ramas.create(2800, 380, "ramaplataforma").setScale(0.6).refreshBody();
@@ -166,14 +183,13 @@ this.ramas.create(3600, 410, "ramaplataforma").setScale(0.6).refreshBody();
 // Grupo de pinchos 
 this.picos = this.physics.add.staticGroup();
 // Picos de suelo
-this.picos.create(500, 480, "picosuelo").setScale(0.6).refreshBody();
-this.picos.create(1000, 480, "picosuelo").setScale(0.6).refreshBody();
-this.picos.create(1500, 480, "picosuelo").setScale(0.6).refreshBody();
+this.picos.create(250, 450, "picosuelo").setScale(0.6).refreshBody();
+this.picos.create(800, 550, "picosuelo").setScale(0.6).refreshBody();
+this.picos.create(1500, 550, "picosuelo").setScale(0.6).refreshBody();
 
 // Picos en ramas
-this.picos.create(1270, 70, "picoramas").setScale(0.6).refreshBody();
-this.picos.create(2000, 320, "picoramas").setScale(0.6).refreshBody();
-this.picos.create(2800, 350, "picoramas").setScale(0.6).refreshBody();
+this.picos.create(1270, 120, "picoramas").setScale(0.6).refreshBody();
+
 
 
 
@@ -296,7 +312,7 @@ this.input.keyboard.on("keydown-P", () => {
       this.physics.add.collider(this.player, this.plataformas);
       this.physics.add.collider(this.player, this.plataformaMovil1);
       this.physics.add.collider(this.player, this.plataformaMovil2);
-
+      this.physics.add.collider(this.player, this.plataformaMovil3);
 
 
       // Animaciones derecha
@@ -332,8 +348,7 @@ this.input.keyboard.on("keydown-P", () => {
 
 
 
-
-
+      
 // Hacer que la cámara siga al personaje
     this.cameras.main.startFollow(this.player);
 
