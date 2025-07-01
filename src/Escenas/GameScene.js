@@ -11,7 +11,7 @@ export default class GameScene extends Phaser.Scene {
     // Fondo centrado en pantalla (parallax )
     this.fondo = this.add.tileSprite(0, 0, this.physics.world.bounds.width, 600, "fondo")
   .setOrigin(0, 0)
-  .setScrollFactor(0); // se mantiene fijo o lo podés cambiar a 0.5 para parallax
+  .setScrollFactor(0); // se mantiene fijo o se puede cambiar a 0.5 para parallax
 
 
     // Nubes (pueden ir un poco más arriba)
@@ -211,21 +211,6 @@ this.input.keyboard.on("keydown-P", () => {
     }
   }
 });
-this.input.keyboard.on("keydown-P", () => {
-  const usaste = this.recolectables.usarPocion();
-  if (usaste) {
-    this.sound.play("usarpocion");
-
-    // Regenerar vida si tenés menos de 4
-    let vida = this.registry.get("vida");
-    if (vida < 4) {
-      vida++;
-      this.registry.set("vida", vida);
-      this.actualizarCorazones();
-    }
-  }
-});
-
 
 
       // Entrada teclado
@@ -292,7 +277,6 @@ this.input.keyboard.on("keydown-P", () => {
 this.enemigos = new Enemigos(this);
 
 
-
         
                       //VIDA
           this.registry.set("vida", 4); // 4 corazones
@@ -348,40 +332,16 @@ this.enemigos = new Enemigos(this);
         frameRate: 1,
         repeat: -1,
       });
-
-// En el create():
-this.anims.create({
-  key: "ataqueDer",
-  frames: [{ key: "ataque", frame: 0 }],
-  frameRate: 1
-});
-
-this.anims.create({
-  key: "ataqueIzq",
-  frames: [{ key: "ataque", frame: 1 }],
-  frameRate: 1
-});
-
-// En el create():
-this.anims.create({
-  key: "disparoMagico",
-  frames: this.anims.generateFrameNumbers("disparos", { start: 0, end: 1 }),
-  frameRate: 10,
-  repeat: -1
-});
       
 // Hacer que la cámara siga al personaje
     this.cameras.main.startFollow(this.player);
 
       // Hacemos el mundo más alto para permitir la caída
-    this.physics.world.setBounds(0, 0, 5000, 2000); // Cambiá el 5000 por el ancho de tu nivel
-    this.cameras.main.setBounds(0, 0, 5000, 600); // o más si querés que la cámara baje también
+    this.physics.world.setBounds(0, 0, 5000, 2000); 
+    this.cameras.main.setBounds(0, 0, 5000, 600); 
 
     this.mapWidth = 50000;
     this.mapHeight = 600;
-
-
-
 
 
   
@@ -419,52 +379,12 @@ update() {
 }
 
 
-
-//no se revolvio como queria (se deja el cambio hasta arreglarlo)
 // SALTO: solo cambia el sprite y sube
 const enSuelo = this.player.body.blocked.down;
 if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && enSuelo) {
   this.player.setVelocityY(-300);
   this.player.setTexture("saltop");
   this.player.setFrame(1); // Solo ese frame
-}
-
-
-
-
-if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X))) {
-  const mirandoDerecha = this.facing === "der";
-  
-  // Reproducir animación de ataque
-  this.player.anims.play(mirandoDerecha ? "ataqueDer" : "ataqueIzq");
-  
-  // Crear disparo
-  const disparo = this.physics.add.sprite(
-    this.player.x + (mirandoDerecha ? 30 : -30), 
-    this.player.y, 
-    "disparos"
-  );
-  
-  disparo.setScale(0.8);
-  disparo.anims.play("disparoMagico");
-  disparo.setVelocityX(mirandoDerecha ? 300 : -300);
-  disparo.setFlipX(!mirandoDerecha);
-  
-  // Eliminar el disparo después de un tiempo
-  this.time.addEvent({
-    delay: 1000,
-    callback: () => disparo.destroy(),
-    callbackScope: this
-  });
-  
-  // Volver a animación idle después del ataque
-  this.time.addEvent({
-    delay: 300,
-    callback: () => {
-      this.player.anims.play(mirandoDerecha ? "idleDer" : "idleIzq");
-    },
-    callbackScope: this
-  });
 }
 
 

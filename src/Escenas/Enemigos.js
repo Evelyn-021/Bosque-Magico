@@ -11,9 +11,11 @@ export default class Enemigos {
 
     // FANTASMAS (flotan con movimiento sinusoidal)
 
+// Configuración de respawn
+    this.enemigosMuertos = []; // { x, y, minX, maxX, velocidad, amplitud, tipo }
+    this.tiempoRespawn = 5000; // 5 segundos
 
-
- 
+     // Crear enemigos iniciales
     this.crearFantasma(600, 550, 400, 600); // (x, y, minX, maxX, velocidad, amplitudFlotacion)
     this.crearFantasma(690, 300, 800, 1200, 80, 30); // (x, y, minX, maxX, velocidad, amplitudFlotacion)
     this.crearFantasma(800, 300, 1800, 2200, 60, 50);
@@ -48,6 +50,7 @@ export default class Enemigos {
   crearFantasma(x, y, minX, maxX, velocidad = 100, amplitud = 40) {
     const enemigo = this.enemigos.create(x, y, "fantasma");
     enemigo.tipo = "fantasma";
+    enemigo.vida = 1; // Vida del enemigo
     enemigo.customMinX = minX;
     enemigo.customMaxX = maxX;
     enemigo.velocidad = velocidad; // Más rápido
@@ -63,9 +66,9 @@ export default class Enemigos {
     // IA: Modo "persecución"
     enemigo.estaPersiguiendo = false;
   
-    // FIX: Hitbox PERFECTO (ajusta según tu sprite)
-    const anchoReal = 50;    // Ancho REAL del sprite (sin zonas transparentes)
-    const altoReal = 60;      // Alto REAL del sprite
+    // FIX: Hitbox 
+    const anchoReal = 70;    // Ancho REAL del sprite (sin zonas transparentes)
+    const altoReal = 70;      // Alto REAL del sprite
     const offsetX = (enemigo.width - anchoReal) / 2;  // Centrado horizontal
     const offsetY = enemigo.height - altoReal;        // Alineado en la base
     
@@ -78,7 +81,35 @@ export default class Enemigos {
     // Efecto visual de fantasma
     enemigo.setAlpha(0.85);
   }
-
+recibirDano(enemigo, dano = 1) {
+    enemigo.vida -= dano;
+    
+    if (enemigo.vida <= 0) {
+      // Guardar datos para respawn
+      this.enemigosMuertos.push({
+        x: enemigo.x,
+        y: enemigo.y,
+        minX: enemigo.customMinX,
+        maxX: enemigo.customMaxX,
+        velocidad: enemigo.velocidad,
+        amplitud: enemigo.amplitud,
+        tipo: enemigo.tipo
+      });
+      
+      // Efecto de muerte
+      enemigo.destroy();
+      
+      // Programar respawn
+      this.scene.time.delayedCall(this.tiempoRespawn, () => {
+        if (this.enemigosMuertos.length > 0) {
+          const datos = this.enemigosMuertos.shift();
+          this[`crear${datos.tipo.charAt(0).toUpperCase() + datos.tipo.slice(1)}`](
+            datos.x, datos.y, datos.minX, datos.maxX, datos.velocidad, datos.amplitud
+          );
+        }
+      });
+    }
+  }
   // ===== UPDATE INTELIGENTE =====
   update() {
     this.enemigos.children.iterate((enemigo) => {
@@ -118,31 +149,38 @@ export default class Enemigos {
   }
 
   // ===== DAÑO AL JUGADOR =====
-  perderVida(jugador, enemigo) {
-    if (this.scene.inmune || !jugador.body) return;
+perderVida(jugador, enemigo) {
+  if (this.scene.inmune || !jugador.body) return;
 
-    // Efecto de retroceso
-    const direccion = (jugador.x < enemigo.x) ? -1 : 1;
-    jugador.setVelocityX(200 * direccion);
-    jugador.setVelocityY(-150);
-    
-    // Sonido + shake de cámara
-    this.scene.sonidoDaño.play();
-    this.scene.cameras.main.shake(200, 0.01);
-    
-    // Reducción de vida
-    this.scene.registry.set("vida", this.scene.registry.get("vida") - 1);
-    
-    // Estado de invencibilidad temporal
-    this.scene.inmune = true;
-    jugador.setTint(0xff0000); // Tinte rojo
-    
-    // Restablecer después de 1 segundo
-    this.scene.time.delayedCall(1000, () => {
-      if (jugador.body) {
-        jugador.clearTint();
-        this.scene.inmune = false;
-      }
-    });
+  // Efecto de retroceso
+  const direccion = (jugador.x < enemigo.x) ? -1 : 1;
+  jugador.setVelocityX(200 * direccion);
+  jugador.setVelocityY(-150);
+
+  // Sonido + sacudida de cámara
+  this.scene.sonidoDaño.play();
+  this.scene.cameras.main.shake(200, 0.01);
+
+  // Reducción de vida
+  let vidaActual = this.scene.registry.get("vida") - 1;
+  this.scene.registry.set("vida", vidaActual);
+
+  // Verificar si la vida llegó a 0 → GAME OVER
+  if (vidaActual <= 0) {
+    this.scene.scene.pause();
+    this.scene.scene.launch("GameOverScene");
+    return; // Salir para evitar más efectos
+  }
+
+  // Estado de invulnerabilidad temporal
+  this.scene.inmune = true;
+  jugador.setTint(0xff0000); // Tinte rojo
+
+  this.scene.time.delayedCall(1000, () => {
+    if (jugador.body) {
+      jugador.clearTint();
+      this.scene.inmune = false;
+    }
+  });
   }
 }

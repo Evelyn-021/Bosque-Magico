@@ -10,7 +10,7 @@ export default class GameOverScene extends Phaser.Scene {
     const overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.5);
 
     // Ventana blanca con borde negro
-    const ventana = this.add.rectangle(400, 300, 400, 250, 0xffffff)
+    const ventana = this.add.rectangle(400, 300, 400, 250, 0x591F8C)
       .setStrokeStyle(4, 0x000000);
 
     let mensaje = "";
