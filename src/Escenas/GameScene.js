@@ -1,4 +1,5 @@
 import Recolectables from "../Escenas/Recolectables.js";
+import Enemigos from "../Escenas/Enemigos.js";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -287,7 +288,8 @@ this.input.keyboard.on("keydown-P", () => {
         this.recolectables.cargarObjetos();
         this.recolectables.crearColisiones(this.player, this.sonidoJuntar);
 
-
+//ENEMIGOS
+this.enemigos = new Enemigos(this);
 
 
 
@@ -436,7 +438,8 @@ if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey('E'))) {
   });
 }
 
-
+//enemigos
+this.enemigos.update();
 
 
 }}

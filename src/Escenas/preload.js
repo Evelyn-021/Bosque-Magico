@@ -43,7 +43,9 @@ export default class Preload extends Phaser.Scene {
     this.load.image("monedas", "./public/assets/img/objetos/monedas.png");
     this.load.image("luciernagas","./public/assets/img/objetos/luciernagas.png");
 
-
+//ENEMIGOS
+this.load.image("calabaza", "./public/assets/img/enemigos/calabaza.png");
+this.load.image("fantasma", "./public/assets/img/enemigos/fantasma.png");
 
  // 🎵 música
     this.load.audio("Musica", "./public/assets/sonidos/Musica.mp3");
@@ -72,11 +74,7 @@ this.load.spritesheet("saltop", "./public/assets/img/Personaje/saltop.png", {
   frameHeight: 81  // ← alto de cada frame
 });
 
-//ENEMIGOS
-this.load.spritesheet("calabaza", "./public/assets/img/enemigos/calabaza.png", {
-  frameWidth: 117.5, 
-  frameHeight: 85
-});
+
 
 
 
