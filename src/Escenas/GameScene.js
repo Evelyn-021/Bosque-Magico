@@ -317,6 +317,8 @@ this.enemigos = new Enemigos(this);
       this.physics.add.collider(this.player, this.plataformaMovil3);
 
 
+
+      
       // Animaciones derecha
       this.anims.create({
         key: "caminarDer",
@@ -347,9 +349,26 @@ this.enemigos = new Enemigos(this);
         repeat: -1,
       });
 
+// En el create():
+this.anims.create({
+  key: "ataqueDer",
+  frames: [{ key: "ataque", frame: 0 }],
+  frameRate: 1
+});
 
+this.anims.create({
+  key: "ataqueIzq",
+  frames: [{ key: "ataque", frame: 1 }],
+  frameRate: 1
+});
 
-
+// En el create():
+this.anims.create({
+  key: "disparoMagico",
+  frames: this.anims.generateFrameNumbers("disparos", { start: 0, end: 1 }),
+  frameRate: 10,
+  repeat: -1
+});
       
 // Hacer que la cámara siga al personaje
     this.cameras.main.startFollow(this.player);
@@ -413,7 +432,40 @@ if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && enSuelo) {
 
 
 
-
+if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X))) {
+  const mirandoDerecha = this.facing === "der";
+  
+  // Reproducir animación de ataque
+  this.player.anims.play(mirandoDerecha ? "ataqueDer" : "ataqueIzq");
+  
+  // Crear disparo
+  const disparo = this.physics.add.sprite(
+    this.player.x + (mirandoDerecha ? 30 : -30), 
+    this.player.y, 
+    "disparos"
+  );
+  
+  disparo.setScale(0.8);
+  disparo.anims.play("disparoMagico");
+  disparo.setVelocityX(mirandoDerecha ? 300 : -300);
+  disparo.setFlipX(!mirandoDerecha);
+  
+  // Eliminar el disparo después de un tiempo
+  this.time.addEvent({
+    delay: 1000,
+    callback: () => disparo.destroy(),
+    callbackScope: this
+  });
+  
+  // Volver a animación idle después del ataque
+  this.time.addEvent({
+    delay: 300,
+    callback: () => {
+      this.player.anims.play(mirandoDerecha ? "idleDer" : "idleIzq");
+    },
+    callbackScope: this
+  });
+}
 
 
 

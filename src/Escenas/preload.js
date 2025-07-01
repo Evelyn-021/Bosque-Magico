@@ -75,8 +75,17 @@ this.load.spritesheet("saltop", "./public/assets/img/Personaje/saltop.png", {
 });
 
 
+// Pose de ataque (2 frames: derecha e izquierda)
+this.load.spritesheet("ataque", "./public/assets/img/Personaje/ataque.png", {
+  frameWidth: 129, // cada sprite mide 129px (258 / 2)
+  frameHeight: 97
+});
 
-
+// Disparo mágico (2 frames)
+this.load.spritesheet("disparos", "./public/assets/img/Personaje/disparos.png", {
+  frameWidth: 120.5, // cada sprite mide aprox. 120px (241 / 2)
+  frameHeight: 35
+});
 
 
 
