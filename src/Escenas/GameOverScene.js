@@ -22,14 +22,14 @@ export default class GameOverScene extends Phaser.Scene {
 
     this.add.text(400, 240, mensaje, {
       fontSize: "28px",
-      color: "#000",
+      color: "#EA2121",
       fontFamily: "Arial",
     }).setOrigin(0.5);
 
     // Botón principal (Reintentar o Continuar)
     const botonPrincipal = this.add.text(400, 310, vidas > 0 ? "Continuar" : "Reiniciar", {
       fontSize: "24px",
-      color: "#0077cc",
+      color: "#4EC6A4",
       fontFamily: "Arial",
     }).setOrigin(0.5).setInteractive();
 
@@ -42,7 +42,7 @@ export default class GameOverScene extends Phaser.Scene {
     // Botón de menú
     const botonMenu = this.add.text(400, 360, "Volver al menú", {
       fontSize: "24px",
-      color: "#0077cc",
+      color: "#80DBFF",
       fontFamily: "Arial",
     }).setOrigin(0.5).setInteractive();
 

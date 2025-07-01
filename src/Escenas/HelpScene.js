@@ -3,13 +3,11 @@ export default class HelpScene extends Phaser.Scene {
     super("HelpScene");
   }
 
-  preload() {
-    this.load.image("helpFondo", "./public/assets/img/interfaz/help.png"); // asegurate de que esté ahí
-  }
-
+  
   create() {
     // Fondo con imagen
-    this.add.image(400, 300, "helpFondo").setScale(1.5);
+    const ventana = this.add.rectangle(400, 300, 500, 350, 0x591F8C)
+      .setStrokeStyle(4, 0x3C015E);
 
     // Texto de ayuda
     this.add.text(400, 160,
@@ -17,7 +15,7 @@ export default class HelpScene extends Phaser.Scene {
       {
         fontSize: "32px",
         color: "#ffffff",
-        fontFamily: "Arial Black",
+        fontFamily: "Arial",
         align: "center"
       })
       .setOrigin(0.5)
@@ -29,7 +27,7 @@ this.add.text(400, 270,
   {
     fontSize: "20px",
     color: "#ffffff",
-    fontFamily: "Arial Black",
+    fontFamily: "Arial",
     align: "center",
     lineSpacing: 10
   })
@@ -42,7 +40,7 @@ this.add.text(400, 400,
     fontSize: "20px",
     //color rojo
     color: "#ff0000",
-    fontFamily: "Arial Black",
+    fontFamily: "Arial",
     align: "center"
   })
   .setOrigin(0.5)
