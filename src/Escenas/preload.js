@@ -9,7 +9,7 @@ export default class Preload extends Phaser.Scene {
     this.load.image("Boton", "./public/assets/img/interfaz/Boton.png");
     this.load.image("config", "./public/assets/img/interfaz/Configuracion.png");
     this.load.image("Sonido", "./public/assets/img/interfaz/Sonido.png");
-    this.load.image("sinSonido", "./public/assets/img/interfaz/sinSonido.png");
+    this.load.image("SinSonido", "./public/assets/img/interfaz/SinSonido.png");
     this.load.image("BotonInicio", "./public/assets/img/interfaz/BotonInicio.png");
     this.load.image("Cerrar", "./public/assets/img/interfaz/Cerrar.png");
     this.load.image("Restart", "./public/assets/img/interfaz/Restart.png");
